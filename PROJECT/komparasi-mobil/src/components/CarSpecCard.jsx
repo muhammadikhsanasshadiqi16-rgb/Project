@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { Settings, Zap, Gauge, Droplet, Trash2, CarFront, Calendar, Activity, Timer, Users, Cog, ChevronDown, ChevronUp, Shield, Ruler, Heart } from "lucide-react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { Settings, Zap, Gauge, Droplet, Trash2, CarFront, Calendar, Activity, Timer, Users, Cog, ChevronDown, ChevronUp, Shield, Ruler, Heart, ShoppingBag } from "lucide-react";
 
 export default function CarSpecCard({ car, onDelete, showDelete = false, viewMode = "grid", isFav, onToggleFav }) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const navigate = useNavigate(); // Inisialisasi navigasi
 
   if (!car) return (
     <div className="card empty-card">
@@ -55,9 +57,13 @@ export default function CarSpecCard({ car, onDelete, showDelete = false, viewMod
           <div className="spec-item"><Users size={16} className="spec-icon color-4" /><div><span>Kapasitas</span><strong>{car.seats} Kursi</strong></div></div>
         </div>
 
-        <div className="card-footer-action">
-          <button className="expand-btn" onClick={() => setIsExpanded(!isExpanded)}>
-            {isExpanded ? <><ChevronUp size={16} /> Tutup Detail</> : <><ChevronDown size={16} /> Buka Metrik Lengkap</>}
+        {/* TOMBOL ACTION GANDA */}
+        <div className="card-footer-action" style={{ display: 'flex', gap: '10px', marginTop: 'auto' }}>
+          <button className="expand-btn" style={{ flex: 1 }} onClick={() => setIsExpanded(!isExpanded)}>
+            {isExpanded ? <><ChevronUp size={16} /> Tutup</> : <><ChevronDown size={16} /> Detail</>}
+          </button>
+          <button className="btn-buy" style={{ flex: 1 }} onClick={() => navigate(`/checkout/${car.id}`)}>
+            <ShoppingBag size={16} /> Pesan Unit
           </button>
         </div>
 

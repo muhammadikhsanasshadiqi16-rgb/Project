@@ -10,10 +10,14 @@ export default function CarListPage({ cars, onDelete, favorites, onToggleFav }) 
   const [sortBy, setSortBy] = useState("default");
   const [viewMode, setViewMode] = useState("grid");
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
-  const [maxPrice, setMaxPrice] = useState(10000); // dalam juta
+  const [maxPrice, setMaxPrice] = useState(10000);
 
   useEffect(() => {
-    if (location.state?.filterFav) setShowFavoritesOnly(true);
+    if (location.state?.filterFav) {
+      setShowFavoritesOnly(true);
+    } else {
+      setShowFavoritesOnly(false);
+    }
   }, [location]);
 
   const brands = ["Semua", ...new Set(cars.map((c) => c.brand))];
@@ -25,7 +29,7 @@ export default function CarListPage({ cars, onDelete, favorites, onToggleFav }) 
     const matchBrand = selectedBrand === "Semua" || car.brand === selectedBrand;
     const matchFav = showFavoritesOnly ? favorites.includes(car.id) : true;
     const matchPrice = carPriceJuta <= maxPrice;
-    
+
     return matchSearch && matchBrand && matchFav && matchPrice;
   });
 
@@ -39,7 +43,7 @@ export default function CarListPage({ cars, onDelete, favorites, onToggleFav }) 
   });
 
   const topPowerCar = [...cars].sort((a, b) => (parseInt(b.power) || 0) - (parseInt(a.power) || 0))[0];
-  const evCount = cars.filter(c => c.engine.includes("Listrik") || c.engine.includes("EV")).length;
+  const evCount = cars.filter((c) => c.engine.includes("Listrik") || c.engine.includes("EV")).length;
 
   return (
     <div className="page fade-in">
@@ -55,15 +59,15 @@ export default function CarListPage({ cars, onDelete, favorites, onToggleFav }) 
           <h1 className="holographic-text">{showFavoritesOnly ? "Koleksi Favorit" : "Master Catalog"}</h1>
           <p>Filter armada eksklusif berdasarkan kebutuhan dan budget.</p>
         </div>
-        
+
         <div className="controls-group">
-          <button className={`btn-toggle-fav ${showFavoritesOnly ? 'active' : ''}`} onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}>
+          <button className={`btn-toggle-fav ${showFavoritesOnly ? "active" : ""}`} onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}>
             <Heart size={18} className={showFavoritesOnly ? "fill-pink text-pink" : ""} /> {showFavoritesOnly ? "Semua Mobil" : "Lihat Favorit"}
           </button>
-          
+
           <div className="view-toggle">
-            <button className={viewMode === "grid" ? "active" : ""} onClick={() => setViewMode("grid")}><LayoutGrid size={18}/></button>
-            <button className={viewMode === "list" ? "active" : ""} onClick={() => setViewMode("list")}><ListIcon size={18}/></button>
+            <button className={viewMode === "grid" ? "active" : ""} onClick={() => setViewMode("grid")}><LayoutGrid size={18} /></button>
+            <button className={viewMode === "list" ? "active" : ""} onClick={() => setViewMode("list")}><ListIcon size={18} /></button>
           </div>
         </div>
       </div>
@@ -73,11 +77,14 @@ export default function CarListPage({ cars, onDelete, favorites, onToggleFav }) 
           <div className="search-box"><Search size={18} className="search-icon" /><input type="text" placeholder="Pencarian kode/brand..." value={search} onChange={(e) => setSearch(e.target.value)} /></div>
           <div className="sort-box"><ArrowDownAZ size={18} className="search-icon" />
             <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-              <option value="default">Urutkan: Relevansi</option><option value="termurah">Termurah</option><option value="termahal">Termahal</option><option value="performa">Tenaga Maksimal</option>
+              <option value="default">Urutkan: Relevansi</option>
+              <option value="termurah">Termurah</option>
+              <option value="termahal">Termahal</option>
+              <option value="performa">Tenaga Maksimal</option>
             </select>
           </div>
         </div>
-        
+
         <div className="filter-row-bottom">
           <div className="brand-scroll-area">
             <span className="filter-label">Merek:</span>
@@ -90,12 +97,17 @@ export default function CarListPage({ cars, onDelete, favorites, onToggleFav }) 
         </div>
       </div>
 
-      {filteredCars.length === 0 ? <div className="no-data">Data metrik tidak ditemukan atau di luar budget.</div> : 
+      {filteredCars.length === 0 ? <div className="no-data">Data metrik tidak ditemukan atau di luar budget.</div> :
         <div className={viewMode === "grid" ? "grid-layout" : "list-layout"}>
           {filteredCars.map((car) => (
-            <CarSpecCard 
-              key={car.id} car={car} onDelete={onDelete} showDelete={true} viewMode={viewMode}
-              isFav={favorites.includes(car.id)} onToggleFav={onToggleFav}
+            <CarSpecCard
+              key={car.id}
+              car={car}
+              onDelete={onDelete}
+              showDelete={true}
+              viewMode={viewMode}
+              isFav={favorites.includes(car.id)}
+              onToggleFav={onToggleFav}
             />
           ))}
         </div>
